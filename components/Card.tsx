@@ -7,9 +7,16 @@ type CardProps = {
 
 const Card = ({ card }: CardProps) => {
   return (
-    <div className="card">
-      <h3>{card.title}</h3>
-    </div>
+    <div className="card-item">
+    {card.cover && 
+        <img 
+            src={card.cover} 
+            className="card-cover" 
+            alt="Viet-alt-img" 
+            onMouseDown={e => e.preventDefault()}
+            />}
+    {card.title}
+</div>
   );
 };
 

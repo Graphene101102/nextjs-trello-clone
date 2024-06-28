@@ -63,13 +63,13 @@ const homePage = (/*{ board }: homePageProps*/) => {
       <div className="font-medium flex items-center mb-1 pl-2 text-xl">
         YOUR WORKSPACES
       </div>
-      <div className="flex-col grid-rows-fr">
-        <div className="flex flex-row">
+      <div className="flex-col grid-rows-fr ">
+        <div className="flex flex-row ">
           <div className='flex pt-4 pl-2'>
             <img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRuFY23z_1MmVFfIWv2HLNpBNvwU_rYCIU9_oqbZnGTTh6QG1ro" alt="" className="mr-2 h-9 rounded-md" />
             <div className='text-xl'>Graphene</div>
           </div>
-          <ul className='flex mr-20' style={{ position: 'absolute', right: 0 }}>
+          <ul className='flex mr-20 ml-20' style={{ right: 0 }}>
             <li>
               <Link className="flex h-8 m-2 rounded-md bg-neutral-500/10 transition text-start no-underline hover:no-underline " href="/">
                 <PanelsTopLeft className="rounded-sm size-4 m-2 object-cover " />

@@ -1,6 +1,14 @@
-const boardIdPage = () => {
+"use client"
+
+import Board from "@/components/Board"
+
+const boardIdPage = ({ params }: { params: { boardId: string } }) => {
+    const boardId = params.boardId as string    
+
     return (
-        <div> Board Id Page</div>
+        <Board params={{
+            boardId: boardId
+        }} />
     )
 }
 

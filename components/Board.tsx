@@ -1,17 +1,26 @@
+"use client"
+
 import React from 'react';
-import { Board as BoardType } from '@/actions/initialData';
+import initialData, { Board as BoardType } from '@/actions/initialData';
 import Column from '@/components/Column';
+import { Columns } from 'lucide-react';
+import ListContainer from './ListContainer';
 
 type BoardProps = {
-  board: BoardType;
+  params: {
+    boardId: string
+  }
 };
+const Board = async  ({
+  params 
+}: BoardProps ) => {
 
-const Board = ({ board }: BoardProps) => {
+  // const Board = await initialData.find(Board => Board.id == params.boardId)
+  // console.log(params.boardId);
+
   return (
-    <div className="board">
-      {board.columns.map(column => (
-        <Column key={column.id} column={column} cards={column.cards} />
-      ))}
+    <div className="p-4 h-full overflow-x-auto">
+      <ListContainer boardId={params.boardId}  />
     </div>
   );
 };
