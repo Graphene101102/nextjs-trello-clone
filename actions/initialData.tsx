@@ -12,8 +12,9 @@ export type Card = {
     title: string;
     cardOrder: string[];
     cards: Card[];
+    _destroy: boolean;
   };
-  
+ 
   export type Board = {
     id: string;
     title:string;
@@ -50,6 +51,7 @@ export type Card = {
               cover: '',
             },
           ],
+          _destroy:false
         },
         {
           id: 'column-2',
@@ -72,6 +74,7 @@ export type Card = {
               cover: '',
             },
           ],
+          _destroy:false
         },
       ],
     },
@@ -102,6 +105,7 @@ export type Card = {
                 cover: '',
               },
             ],
+            _destroy:false
           },
           {
             id: 'column-2',
@@ -124,6 +128,7 @@ export type Card = {
                 cover: '',
               },
             ],
+            _destroy:false
           },
         ],
       },

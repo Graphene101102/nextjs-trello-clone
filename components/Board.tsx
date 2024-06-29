@@ -15,7 +15,6 @@ const Board = async  ({
   params 
 }: BoardProps ) => {
 
-  // const Board = await initialData.find(Board => Board.id == params.boardId)
   // console.log(params.boardId);
 
   return (
