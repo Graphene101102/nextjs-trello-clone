@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Column } from '@/actions/initialData';
 import Card from './Card';
 import { Button, Dropdown, Form } from 'react-bootstrap';
@@ -21,7 +21,7 @@ const Columns: React.FC<ColumnProps> = ({ column, onCardDrop, onUpdateColumn }) 
   const toggleShowConfirmModal = () => setShow(!show)
 
   const [columnTitle, setColumnTitle] = useState('')
-  const columnTitleChange = useCallback((e: { target: { value: React.SetStateAction<string>; }; }) => setColumnTitle(e.target.value), [])
+  const columnTitleChange = (e: { target: { value: React.SetStateAction<string>; }; }) => setColumnTitle(e.target.value)
 
   const [openNewCardForm, setOpenNewCardForm] = useState(false);
   const toggleOpenNewCard = () => setOpenNewCardForm(!openNewCardForm)

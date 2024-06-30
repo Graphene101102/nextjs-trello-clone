@@ -1,17 +1,15 @@
-import React, { useCallback, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import initialData, { Board, Column } from '@/actions/initialData';
 import { Container, Draggable, DropResult } from "react-smooth-dnd";
 import Columns from './Column';
 import { Container as BootstrapContainer, Row, Col, Form, Button } from 'react-bootstrap';
 import { applyDrag } from '@/utilities/dnd';
+import { isEmpty } from 'lodash';
 
 // import "@/styles/ListContainer.css";
 
 interface ListContainerProps {
   boardId: string;
-}
-interface ColumnProps {
-  column: Column;
 }
 
 const ListContainer: React.FC<ListContainerProps> = ({ boardId }) => {
@@ -22,8 +20,9 @@ const ListContainer: React.FC<ListContainerProps> = ({ boardId }) => {
 
   const [newColumnTitle, setNewColumnTitle] = useState('')
 
-  const onNewColumnTitleChange = useCallback((e: { target: { value: React.SetStateAction<string>; }; }) => setNewColumnTitle(e.target.value), [])
-
+  const onNewColumnTitleChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
+    setNewColumnTitle(e.target.value);
+  };
 
   React.useEffect(() => {
     const fetchBoardData = async () => {
@@ -40,87 +39,107 @@ const ListContainer: React.FC<ListContainerProps> = ({ boardId }) => {
     fetchBoardData();
   }, [boardId]);
 
-  if (!boardData) {
-    return <div>Loading...</div>;
+  if (!boardData || isEmpty(columnData)) {
+    return <div>Đang tải...</div>;
+  }
+
+  if (isEmpty(boardData)) {
+    return <div className="not-found" style={{ 'padding': '10px', 'color': 'white' }}>Board not found</div>
+  }
+
+  if (isEmpty(columnData)) {
+    return <div className="not-found" style={{ 'padding': '10px', 'color': 'white' }}></div>
   }
 
   const onColumnDrop = (dropResult: any) => {
+    if (columnData) {
+      let newColumns = [...columnData]
+      newColumns = applyDrag(newColumns, dropResult)
 
-    let newColumns = [...columnData]
-    newColumns = applyDrag(newColumns, dropResult)
+      console.log(newColumns);
 
-    let newBoard = { ...boardData }
-    newBoard.columnOrder = newColumns.map(c => c.id)
-    newBoard.columns = newColumns
 
-    setColumnData(newColumns)
-    setBoardData(newBoard)
-    // console.log(newBoard)
+      let newBoard = { ...boardData }
+      newBoard.columnOrder = newColumns.map(c => c.id)
+      newBoard.columns = newColumns
+
+      setColumnData(newColumns)
+      setBoardData(newBoard)
+      // console.log(newBoard)
+    }
+
   }
 
   const addNewColumn = () => {
-    const newColumnToAdd = {
-      id: Math.random().toString(36).substring(2, 5),
-      boardId: boardData.id,
-      title: newColumnTitle.trim(),
-      cardOrder: [],
-      cards: [],
-      _destroy:false
+    if (columnData) {
+      const newColumnToAdd = {
+        id: Math.random().toString(36).substring(2, 5),
+        boardId: boardData.id,
+        title: newColumnTitle.trim(),
+        cardOrder: [],
+        cards: [],
+        _destroy: false
+      }
+      let newColumns = [...columnData]
+      newColumns.push(newColumnToAdd)
+
+      let newBoard = { ...boardData }
+      newBoard.columnOrder = newColumns.map(c => c.id)
+      newBoard.columns = newColumns
+
+      setColumnData(newColumns)
+      setBoardData(newBoard)
+
+      setNewColumnTitle('')
+      toggleOpenNewColumn()
     }
-    let newColumns = [...columnData]
-    newColumns.push(newColumnToAdd)
 
-    let newBoard = { ...boardData }
-    newBoard.columnOrder = newColumns.map(c => c.id)
-    newBoard.columns = newColumns
-
-    setColumnData(newColumns)
-    setBoardData(newBoard)
-
-    setNewColumnTitle('')
-    toggleOpenNewColumn()
   }
 
   const onCardDrop = (columnId: string, dropResult: DropResult) => {
-    if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
+    if (columnData) {
+      if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
 
-      let newColumns = [...columnData]
-      let currentColumns = newColumns.find(c => c.id === columnId)
+        let newColumns = [...columnData]
+        let currentColumns = newColumns.find(c => c.id === columnId)
 
-      if (currentColumns) {
-        currentColumns.cards = applyDrag(currentColumns.cards.slice(), dropResult);
-        currentColumns.cardOrder = currentColumns.cards.map(i => i.id)
-      } else {
-        console.warn("currentColumns is undefined");
+        if (currentColumns) {
+          currentColumns.cards = applyDrag(currentColumns.cards.slice(), dropResult);
+          currentColumns.cardOrder = currentColumns.cards.map(i => i.id)
+        } else {
+          console.warn("currentColumns is undefined");
+        }
+
+        // console.log(newColumns)
+        setColumnData(newColumns)
+
       }
-
-      // console.log(newColumns)
-      setColumnData(newColumns)
-
     }
+
   }
 
   const onUpdateColumn = (newColumnToUpdate: Column) => {
-    const columnIdToUpdate = newColumnToUpdate.id
-    let newColumns = [...columnData]
-    const columnToUpdate = newColumns.findIndex(i => i.id === columnIdToUpdate)
+    if (columnData) {
+      const columnIdToUpdate = newColumnToUpdate.id
+      let newColumns = [...columnData]
+      const columnToUpdate = newColumns.findIndex(i => i.id === columnIdToUpdate)
 
-    if (newColumnToUpdate._destroy) {
-      //remove column
-      newColumns.splice(columnToUpdate, 1)
-    } else {
-      //change title
-      newColumns.splice(columnToUpdate, 1, newColumnToUpdate)
+      if (newColumnToUpdate._destroy) {
+        //remove column
+        newColumns.splice(columnToUpdate, 1)
+      } else {
+        //change title
+        newColumns.splice(columnToUpdate, 1, newColumnToUpdate)
+      }
+
+      let newBoard = { ...boardData }
+      newBoard.columnOrder = newColumns.map(c => c.id)
+      newBoard.columns = newColumns
+
+      setColumnData(newColumns)
+      setBoardData(newBoard)
     }
-
-    let newBoard = { ...boardData }
-    newBoard.columnOrder = newColumns.map(c => c.id)
-    newBoard.columns = newColumns
-
-    setColumnData(newColumns)
-    setBoardData(newBoard)
   }
-
 
   return (
     <div className="card-scene">
@@ -134,18 +153,16 @@ const ListContainer: React.FC<ListContainerProps> = ({ boardId }) => {
             showOnTop: true,
             className: "cards-drop-preview",
           }}
-          render={() => (
-            <>
-              {columnData.map((column) => (
-                <Draggable key={column.id}
-                  render={() => <>{
-                    <Columns column={column} onCardDrop={onCardDrop} onUpdateColumn={onUpdateColumn} />
-                  }</>}
-                />
-              ))}
-            </>
+        >
+          {columnData.map(column => {
+            return (
+              <Draggable key={column.id}>
+                <Columns column={column} onCardDrop={onCardDrop} onUpdateColumn={onUpdateColumn} />
+              </Draggable>
+            )
+          }
           )}
-        />
+        </Container>
         <BootstrapContainer className="container">
           {!openNewColumnForm && <Row>
             <Col className="add-new-column" onClick={toggleOpenNewColumn}>
