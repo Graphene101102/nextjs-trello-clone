@@ -2,26 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { Column } from '@/actions/initialData';
 import Card from './Card';
 import { Button, Dropdown, Form } from 'react-bootstrap';
-import { Container, Draggable, DropResult } from 'react-smooth-dnd';
 import ConfirmModal from './confirmModal';
-import { cloneDeep } from "lodash";
-
+import { cloneDeep } from 'lodash';
 
 interface ColumnProps {
   column: Column;
-  onCardDrop: (columnId: string, dropResult: DropResult) => void;
-  onUpdateColumn: (newColumnToUpdate: Column) => void;
+  onUpdateColumn: (column: Column) => void;
 }
 
-const Columns: React.FC<ColumnProps> = ({ column, onCardDrop, onUpdateColumn }) => {
+const Columns: React.FC<ColumnProps> = ({ column, onUpdateColumn }) => {
 
-  const card = column.cards
+  const [columnData, setColumnData] = React.useState<Column | null>(column || null);
+
+  //Change column title
+  const [columnTitle, setColumnTitle] = useState('')
+  const columnTitleChange = (e: { target: { value: React.SetStateAction<string>; }; }) => setColumnTitle(e.target.value)
+  useEffect(() => {
+    setColumnTitle(column.title)
+  }, [column.title])
 
   const [show, setShow] = useState(false);
   const toggleShowConfirmModal = () => setShow(!show)
-
-  const [columnTitle, setColumnTitle] = useState('')
-  const columnTitleChange = (e: { target: { value: React.SetStateAction<string>; }; }) => setColumnTitle(e.target.value)
 
   const [openNewCardForm, setOpenNewCardForm] = useState(false);
   const toggleOpenNewCard = () => setOpenNewCardForm(!openNewCardForm)
@@ -29,9 +30,16 @@ const Columns: React.FC<ColumnProps> = ({ column, onCardDrop, onUpdateColumn }) 
   const [newCardContent, setNewCardContent] = useState('')
   const onNewCard = (e: { target: { value: React.SetStateAction<string>; }; }) => setNewCardContent(e.target.value)
 
-  useEffect(() => {
-    setColumnTitle(column.title)
-  }, [column.title])
+
+
+  const columnTitleChangeBlur = () => {
+    console.log(columnTitle)
+    const newColumn = {
+      ...column,
+      title: columnTitle
+    }
+    onUpdateColumn(newColumn)
+  }
 
   const onConfirmModalAction = (type: any) => {
     console.log(type)
@@ -45,13 +53,11 @@ const Columns: React.FC<ColumnProps> = ({ column, onCardDrop, onUpdateColumn }) 
     toggleShowConfirmModal()
   }
 
-  const columnTitleChangeBlur = () => {
-    console.log(columnTitle)
-    const newColumn = {
-      ...column,
-      title: columnTitle
+  const PressEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      (e.target as HTMLInputElement).blur();
     }
-    onUpdateColumn(newColumn)
   }
 
   const addNewCard = () => {
@@ -73,15 +79,9 @@ const Columns: React.FC<ColumnProps> = ({ column, onCardDrop, onUpdateColumn }) 
     toggleOpenNewCard()
   }
 
-  const PressEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      (e.target as HTMLInputElement).blur();
-    }
-  }
 
   return (
-    <div className="column">
+    <div className='Column'>
       <header className="column-drag-handle">
         <div className="column-title">
           <Form.Control
@@ -108,44 +108,8 @@ const Columns: React.FC<ColumnProps> = ({ column, onCardDrop, onUpdateColumn }) 
         </div>
 
       </header>
-      <div className="task-list">
-        <Container
-          groupName="col"
-          // onDragStart={e => console.log("drag started", e)}
-          // onDragEnd={e => console.log("drag end", e)}
-          onDrop={dropResult => onCardDrop(column.id, dropResult)}
-          getChildPayload={index => card[index]}
-          dragClass="card-ghost"
-          dropClass="card-ghost-drop"
-          // onDragEnter={() => {
-          //   console.log("drag enter:", column.id);
-          // }}
-          // onDragLeave={() => {
-          //   console.log("drag leave:", column.id);
-          // }}
-          // onDropReady={p => console.log('Drop ready: ', p)}
-          dropPlaceholder={{
-            animationDuration: 150,
-            showOnTop: true,
-            className: 'card-drop-preview'
-          }}
-          // dropPlaceholderAnimationDuration={200}
-
-          render={() => (
-            <>
-              {card.map((card, index) => (
-                <Draggable key={index}
-                  render={() => (
-                    <>
-                      <Card card={card} />
-                    </>
-                  )}
-                />
-              ))}
-            </>
-          )}
-        />
-
+      <ul className='card-list'>
+        {columnData?.cards.map((card, index) => <Card key={index} card={card} />)}
         {openNewCardForm &&
           <div className="add-new-card-area">
             <Form.Control
@@ -162,8 +126,7 @@ const Columns: React.FC<ColumnProps> = ({ column, onCardDrop, onUpdateColumn }) 
             <span className="cancel-icon" onClick={toggleOpenNewCard}> <i className="fa fa-trash icon" /></span>
           </div>
         }
-
-      </div>
+      </ul>
 
       <footer>
         {!openNewCardForm &&
@@ -173,19 +136,13 @@ const Columns: React.FC<ColumnProps> = ({ column, onCardDrop, onUpdateColumn }) 
         }
       </footer>
 
-
-
-
       <ConfirmModal
         title="Remove column"
         content={'Are you sure you want to remove this column!'}
         show={show}
         onAction={onConfirmModalAction}
       />
-
-
     </div>
-
   );
 };
 

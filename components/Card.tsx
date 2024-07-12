@@ -8,11 +8,11 @@ type CardProps = {
 const Card: React.FC<CardProps> = ({ card }) => {
 
   return (
-    <div className="card-item">
+    <div className="bg-yellow-50 p-2 rounded-md mb-2">
       {card.cover &&
         <img
           src={card.cover}
-          className="card-cover"
+          className="block rounded-t-md"
           alt="Viet-alt-img"
           onMouseDown={e => e.preventDefault()}
         />}

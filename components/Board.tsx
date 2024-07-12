@@ -1,9 +1,6 @@
 "use client"
 
 import React from 'react';
-import initialData, { Board as BoardType } from '@/actions/initialData';
-import Column from '@/components/Column';
-import { Columns } from 'lucide-react';
 import ListContainer from './ListContainer';
 
 type BoardProps = {

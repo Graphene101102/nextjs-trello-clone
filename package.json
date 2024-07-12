@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@atlaskit/pragmatic-drag-and-drop-react-beautiful-dnd-migration": "^1.2.0",
     "@nextui-org/accordion": "^2.0.34",
     "@nextui-org/react": "^2.4.1",
     "@nextui-org/system": "^2.2.1",
@@ -16,6 +17,7 @@
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@svgr/webpack": "^8.1.0",
+    "@types/react-beautiful-dnd": "^13.1.8",
     "bootstrap": "^5.3.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -24,15 +26,16 @@
     "lucide-react": "^0.394.0",
     "next": "14.2.3",
     "next-auth": "^5.0.0-beta.19",
-    "react": "^17.0.2",
+    "react": "^18.3.1",
+    "react-beautiful-dnd": "^13.1.1",
     "react-bootstrap": "^2.10.3",
-    "react-dom": "^17.0.2",
-    "react-smooth-dnd": "^0.11.1",
+    "react-dom": "^18.3.1",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "usehooks-ts": "^3.1.0"
   },
   "devDependencies": {
+    "@atlaskit/codemod-utils": "^4.2.4",
     "@types/next-auth": "^3.15.0",
     "@types/node": "20.14.9",
     "@types/react": "18.3.3",

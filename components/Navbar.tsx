@@ -26,9 +26,12 @@ export const Navbar = () => {
         <nav className="fixed z-50 top-0 px-4 w-full h-14 border-b shadow-sm bg-white flex items-center justify-normal">
             {/* Mobile Sidebar */}
             <div className="flex items-center gap-x-4">
-                <div className="text-lg font-bold text-neutral-700 pb-1 pl-7">
-                    Trello
-                </div>
+                <a href="/">
+                    <div className="text-lg font-bold text-neutral-700 pb-1 pl-7" >
+                        Trello
+                    </div>
+                </a>
+
                 <div className="ml-auto flex items-center gap-x-2">
                     <DropdownItem
                         title="Workspace"
