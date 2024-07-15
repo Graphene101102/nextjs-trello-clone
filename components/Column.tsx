@@ -4,6 +4,7 @@ import Card from './Card';
 import { Button, Dropdown, Form } from 'react-bootstrap';
 import ConfirmModal from './confirmModal';
 import { cloneDeep } from 'lodash';
+import "@/styles/column.scss";
 
 interface ColumnProps {
   column: Column;
